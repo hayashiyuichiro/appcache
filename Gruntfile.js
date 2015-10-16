@@ -28,6 +28,35 @@ module.exports = function (grunt) {
     // Project settings
     config: config,
 
+    'gh-pages': {
+      options: {
+        base: 'dist',
+        repo: 'https://github.com/hayashiyuichiro/appcache.git'
+      },
+      src: ['**']
+    },
+    appcache: {
+      options: {
+        // Task-specific options go here.
+        basePath: '<%= config.dist %>'
+      },
+        // Target-specific file lists and/or options go here.
+      all: {
+        dest: '<%= config.dist %>/ashiras.appcache',
+        cache: {
+          patterns: [
+            '<%= config.dist %>/images/*.png',
+            '<%= config.dist %>/scripts/*.js',
+            '<%= config.dist %>/styles/*.css',
+            '<%= config.dist %>/*.html',
+            '<%= config.dist %>/*.ico',
+            '<%= config.dist %>/*.png'
+          ],
+        },
+        network: '*'
+      }
+    },
+
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       bower: {
@@ -380,6 +409,22 @@ module.exports = function (grunt) {
     'rev',
     'usemin',
     'htmlmin'
+  ]);
+  grunt.registerTask('deploy', [
+    'clean:dist',
+    'wiredep',
+    'useminPrepare',
+    'concurrent:dist',
+    'autoprefixer',
+    'concat',
+    'cssmin',
+    'uglify',
+    'copy:dist',
+    'rev',
+    'usemin',
+    'htmlmin',
+    'appcache',
+    'gh-pages'
   ]);
 
   grunt.registerTask('default', [
